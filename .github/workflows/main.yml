@@ -1,0 +1,28 @@
+name: Sync Fork
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Fetch upstream repository
+      run: |
+        git remote add crypto https://github.com/Crypt00o/GDSC-Backend.git
+        git fetch crypto
+
+    - name: Merge upstream changes
+      run: |
+        git checkout master
+        git merge upstream/master
+
+    - name: Push changes to forked repository
+      uses: ad-m/github-push-action@main
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
